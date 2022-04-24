@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model customer_order {
+  id         Int          @id @default(autoincrement())
+  title      String?      @db.VarChar(100)
+  order_item order_item[]
+}
+
+model order_item {
+  id             Int             @id @default(autoincrement())
+  title          String?         @db.VarChar(100)
+  fk_order_id    Int?
+  customer_order customer_order? @relation(fields: [fk_order_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model users {
+  id   BigInt?
+  name String? @db.VarChar(128)
+
+  @@ignore
+}
+
+model customer {
+  id      Int     @id @default(autoincrement())
+  name    String? @db.VarChar(100)
+  address String? @db.VarChar(100)
+}
